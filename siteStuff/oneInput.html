@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Work and Play: Coding – One Input</title>
+
+</head>
+<body>
+  <link href="basic.css" rel="stylesheet" type="text/css">
+
+  <h1>Work And Play</h1>
+  <p>Here's an input box and a result box for very basic exploration.</p>
+  <blockquote>
+     <p>Input: <input id="oneAtATime_numin" name="numin"></p>
+     <p>Output: <output id="oneAtATime_Output">nothing yet...</output></p>
+     <script>
+         document.getElementById("oneAtATime_numin").addEventListener("keyup", function(event) {
+             event.preventDefault();
+             if (event.keyCode === 13) {
+                 oneAtATime_Output.value=main(oneAtATime_numin.value, 'textbox');
+                 oneAtATime_numin.value = "";
+             }
+         });
+     </script>
+	 
+	 <!-- <p>Cucumber tests (n/a)</p>-->
+  </blockquote>
+  
+
+<script src="./main.js"></script>
+</body>
+</html>
+
+ 	  
+

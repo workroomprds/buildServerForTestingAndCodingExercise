@@ -1,0 +1,224 @@
+---
+- name: provision servers for WorkAndPlay
+
+  hosts: local
+
+  vars_files:
+    - ./vars/droplets.yml
+    - ./vars/sensitive.yml
+    - ./vars/sshInfo.yml	
+
+  tasks:
+  # You need to have set up an ssh key on DO, to add to your new droplets. This gets DO's internal ID for your SSH key.
+  - name: get info about all ssh keys on Digital Ocean
+    digital_ocean_sshkey_facts:
+      api_token: "{{ sensitive.do_token }}"
+
+  - name: set the SSH key ID as a fact (from Learn Ansible book)
+    set_fact:
+      my_DO_ssh_key_id: "{{ item.id }}"
+    with_items: "{{ ssh_keys | json_query(key_query) }}"
+    vars:
+      key_query: "[?name=='{{ sshInfo.do_ssh_key_name}}' ]"
+    register: my_DO_ssh_key_id
+
+  # set up droplets, adding the SSH key onto new droplets to allow access    
+  - name: make droplets, if they don't exist already
+    digital_ocean_droplet: 
+      state: present
+      name: "{{item.name}}"
+      unique_name: yes
+      size: 512mb
+      region: lon1
+      image: ubuntu-14-04-x64
+      ssh_keys: "{{ my_DO_ssh_key_id }}"
+      oauth_token: "{{ sensitive.do_token }}"
+      wait: yes
+    with_items: "{{droplets}}"
+    register: droplet_details
+
+# Debug step to show droplet details passed to next step
+#  - name: show droplet details
+#    debug:
+#      var: item
+#    with_items: '{{droplet_details.results}}'
+
+#   Keep track of the details of the server you've set up
+#   variables set user (needed), use right key, stop wretched dialog with known_hosts
+  - name: Add named droplet to group newServers
+    add_host: 
+      groupname: newServers
+      hostname: "{{ item.data.ip_address }}"
+      ansible_user: root
+      ansible_private_key_file: "{{sshInfo.local_private_ssh_key}}"
+      ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+      WPL_server_info: "{{item.data.droplet.name}}"
+      otherServers: "{{droplet_details.results}}"
+    with_items: '{{droplet_details.results}}'
+
+
+#  Debug step to show details of all new servers
+#  - name: show newServers details
+#    debug:
+#      var: newServers
+
+- name: set up software and config on new servers
+  hosts: newServers
+  tasks:
+
+  # install base packages for web server with apt-get
+  - name: install packages
+    apt:
+       name: ['apache2', 'libapache2-mod-php5', 'git', 'nodejs', 'npm' ]
+
+  # use template to set up customised index file    
+  - name: remove existing index
+    file: >
+      path=/var/www/html/index.html
+      state=absent
+  - name: set up index
+    template: src=./siteStuff/index.html dest=/var/www/html/index.html force=yes
+  - name: change permissions on index
+    file: 
+      path: /var/www/html/index.html
+      mode: '666'
+
+  # Copy over CSS    
+  - name: remove existing css
+    file: 
+      path: /var/www/html/basic.css
+      state: absent
+  - name: upload basic.css
+    copy: 
+      src: ./siteStuff/basic.css 
+      dest: /var/www/html/basic.css
+    
+  # Copy over target javascript    
+  - name: remove existing main.js
+    file: 
+      path: /var/www/html/main.js
+      state: absent
+  - name: upload main.js
+    copy: 
+      src: ./siteStuff/main.js 
+      dest: /var/www/html/main.js
+  - name: change permissions on main.js
+    file: 
+      path: /var/www/html/main.js
+      mode: '777'
+    
+ # Copy over page to allow direct testing    
+  - name: remove existing oneInput.html
+    file: 
+      path: /var/www/html/oneInput.html
+      state: absent
+  - name: upload oneInput.html
+    copy: 
+      src: ./siteStuff/oneInput.html 
+      dest: /var/www/html/oneInput.html
+  - name: change permissions on oneInput.html
+    file: 
+      path: /var/www/html/oneInput.html
+      mode: '777'
+    
+  # Copy over test runner (uses teamplating engine – make clearer by switching to copy)    
+  - name: remove existing testStuff
+    file:
+      path: /var/www/html/testStuff.html
+      state: absent
+  - name: upload testStuff
+    template: src=./siteStuff/testStuff.html dest=/var/www/html/testStuff.html force=yes
+  - name: change permissions on testStuff
+    file: 
+      path: /var/www/html/testStuff.html
+      mode: '666'
+    
+  # Copy over the jasmineTests directory – testMain.js within this is another target for the exercises   
+  - name: remove jasmineTests
+    file: 
+      path: /var/www/html/jasmineTests/
+      state: absent
+  - name: Copy jasmineTests
+    copy:
+      src: ./siteStuff/jasmineTests/
+      dest: /var/www/html/jasmineTests/
+  - name: change permissions on jasmineTests/testMain.js
+    file: 
+      path: /var/www/html/jasmineTests/testMain.js
+      mode: '777'
+
+  # Copy over the blocky directory from local (had problems doing a direct install)    
+  - name: set up blockly
+    git:
+      repo: https://github.com/google/blockly
+      dest: /var/www/html/blockly/
+
+  # Install latest ICECoder and change permissions (should change to fix version)   
+  - name: set up iceCoder
+    git:
+      repo: https://github.com/mattpass/ICEcoder.git
+      dest: /var/www/html/ICEcoder/
+  - name: change permissions on backups
+    file:
+      path: /var/www/html/ICEcoder/backups
+      mode: '757'
+  - name: change permissions on lib
+    file:
+      path: /var/www/html/ICEcoder/lib
+      mode: '757'
+  - name: change permissions on plugins
+    file:
+      path: /var/www/html/ICEcoder/plugins
+      mode: '757'
+  - name: change permissions on test
+    file:
+      path: /var/www/html/ICEcoder/test
+      mode: '757'
+  - name: change permissions on tmp
+    file:
+      path: /var/www/html/ICEcoder/tmp
+      mode: '757'
+
+  # Install Jasmine as a node module to use from the command line    
+  - name: set up jasmine
+    npm:
+      name: jasmine
+      global: no
+      registry: http://registry.npmjs.org/
+      path: /var/www/html/
+
+  # Install JasmineCore so that the browser can use it     
+  - name: set up jasmine core for browser
+    npm:
+      name: jasmine-core
+      global: no
+      registry: http://registry.npmjs.org/
+      path: /var/www/html/
+
+# For later: install Jest and Cucumber   
+#  - name: set up jest
+#    npm:
+#      name: jest
+#      global: no
+#      registry: http://registry.npmjs.org/
+#      path: /var/www/html/jest/
+#  - name: set up cucumber
+#    npm:
+#      name: cucumber
+#      global: no
+#      registry: http://registry.npmjs.org/
+#      path: /var/www/html/cucumber/
+
+# Start the web server
+  - name: start Apache
+    service: name=apache2 state=started enabled=yes
+...
+
+
+#  - name: Add new droplet to known_hosts # to save the usual query on ssh in for the first time
+#    known_hosts: >
+#      name="{{ item.droplet.ip_address }}"
+#      key="{{ lookup('file', '~/.ssh/TestLabEuroSTAR2016.pub.reduced') }}"
+#      state=present
+#    with_items: '{{droplet_details.results}}'
+#     key="{{ lookup('file', '~/.ssh/TestLabEuroSTAR2016.pub.reduced') }}"

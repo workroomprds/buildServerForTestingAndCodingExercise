@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Work and Play: Coding</title>
+
+</head>
+<body>
+  <link href="basic.css" rel="stylesheet" type="text/css">
+
+  <h1>Work And Play</h1>
+  <h2>Write Code to Satisfy Tests for {{WPL_server_info}}</h2>
+  <p>This exercise involves <em>code</em>. You'll write JavaScript, editing a file (on the server) to add and change code, and another file (on the server) to enable (and write) tests.</p>
+  <p>Our test framework is Jasmine; you'll find that we have several tests written, but currently disabled. You're welcome to write more, and to ignore what we've got.</p>
+  <blockquote>
+  	  <H3>First Steps</h3>
+	  <ul>
+		  <li>Run and read the <a href="./testStuff.html" target ="_blank">tests</a></li>
+		  <li>Use ICECoder to look at testMain.js. These are the tests. Enable one</li>
+		  <li>Run the tests again</li>
+		  <li>Use ICECoder to look at the code in main.js</li>
+		  <li>Change the code so that the test passes</li>
+	  </ul>
+  </blockquote>
+  <blockquote>
+	  <h3>Files</h3>
+	  <p>You've got your own server, with your own files. Тhough the tests run in the browser, the files and the test framework are remote – so we don't have to install anything or set up ftp.</p>
+	  <p>Use <a href="./ICEcoder/" target ="_blank">ICEcoder</a> to change files on the server. It's not great, but it mostly works. It's better on laptops than phones. The first thing you'll need to do is set a password (aargh). If you can't remember it, WRITE IT DOWN!</p>
+	  <p>You'll need to change <strong>main.js</strong> to add code, and change <strong>testMain.js</strong> to enable (or write) more tests.</p>
+  </blockquote>
+  
+  <blockquote>
+	 <h3>Testing</h3>
+ 	 <p>We're using Jasmine. Here are some Jasmine <a href="./testStuff.html" target ="_blank">tests</a>.</p>
+	 <p>Most of these tests are suspended. Look in the testMain.js file for tests, and change <strong>xit</strong> to <strong>it</strong> to make the test live, then refresh.</p>
+	 <hr>
+	 <p>Here's an input and output for very basic exploration of the function. Note that it won't reload as you change main.</p>
+     <p>Input: <input id="oneAtATime_numin" name="numin"></p>
+     <p>Output: <output id="oneAtATime_Output">nothing yet...</output></p>
+     <script>
+         document.getElementById("oneAtATime_numin").addEventListener("keyup", function(event) {
+             event.preventDefault();
+             if (event.keyCode === 13) {
+                 oneAtATime_Output.value=main(oneAtATime_numin.value, 'textbox');
+                 oneAtATime_numin.value = "";
+             }
+         });
+     </script>
+	 <p>Here's a <a href="./oneInput.html" target="_blank">page</a> to reload when you've changed main.</p>	 
+	 <!-- <p>Cucumber tests (n/a)</p>-->
+  </blockquote>
+  
+  <blockquote>
+	   <h3>Coding</h3>
+	   <p>Use Blockly to build syntactically-correct JavaScript out of drag-and-drop blocks. This just builds code: it doesn't put it in the right place, run it, test it – or even save it if you navigate away.</p>
+	   <p>To get the Jasmine tests to work on your code, paste your code inside the <strong>function() { <em>here</em> }</strong> in <strong>main.js</strong>.</p>
+		   <BR>
+	   <div id="blocklyDiv" style="height: 300px; width: 100%;" >
+	  <!-- <xml id="toolbox" style="display: none">
+	 	<category name="Logic" colour="210">...</category>
+	 	<category name="Loops" colour="120">...</category>
+	 	<category name="Math" colour="230">...</category>
+	 	<category name="Colour" colour="20">...</category>
+	 	<category name="Variables" colour="330" custom="VARIABLE"></category>
+	 	<category name="Functions" colour="290" custom="PROCEDURE"></category>
+	     <block type="controls_if"></block>
+	     <block type="controls_repeat_ext"></block>
+	     <block type="logic_compare"></block>
+	     <block type="math_number"></block>
+	     <block type="math_arithmetic"></block>
+	     <block type="text"></block>
+	     <block type="text_print"></block>
+	   </xml>	--> 
+	 	  You build blocks here...
+	 	  <xml id="toolbox" style="display: none">
+	 	      <category name="Logic" colour="%{BKY_LOGIC_HUE}">
+	 	        <block type="controls_if"></block>
+	 	        <block type="logic_compare"></block>
+	 	        <block type="logic_operation"></block>
+	 	        <block type="logic_negate"></block>
+	 	        <block type="logic_boolean"></block>
+	 	        <block type="logic_null"></block>
+	 	        <block type="logic_ternary"></block>
+	 	      </category>
+	 	      <category name="Loops" colour="%{BKY_LOOPS_HUE}">
+	 	        <block type="controls_repeat_ext">
+	 	          <value name="TIMES">
+	 	            <shadow type="math_number">
+	 	              <field name="NUM">10</field>
+	 	            </shadow>
+	 	          </value>
+	 	        </block>
+	 	        <block type="controls_whileUntil"></block>
+	 	        <block type="controls_for">
+	 	          <value name="FROM">
+	 	            <shadow type="math_number">
+	 	              <field name="NUM">1</field>
+	 	            </shadow>
+	 	          </value>
+	 	          <value name="TO">
+	 	            <shadow type="math_number">
+	 	              <field name="NUM">10</field>
+	 	            </shadow>
+	 	          </value>
+	 	          <value name="BY">
+	 	            <shadow type="math_number">
+	 	              <field name="NUM">1</field>
+	 	            </shadow>
+	 	          </value>
+	 	        </block>
+	 	        <block type="controls_forEach"></block>
+	 	        <block type="controls_flow_statements"></block>
+	 	      </category>
+	 	      <category name="Math" colour="%{BKY_MATH_HUE}">
+	 	        <block type="math_number">
+	 	          <field name="NUM">123</field>
+	 	        </block>
+	 	        <block type="math_arithmetic">
+	 	          <value name="A">
+	 	            <shadow type="math_number">
+	 	              <field name="NUM">1</field>
+	 	            </shadow>
+	 	          </value>
+	 	          <value name="B">
+	 	            <shadow type="math_number">
+	 	              <field name="NUM">1</field>
+	 	            </shadow>
+	 	          </value>
+	 	        </block>
+	 	        <block type="math_single">
+	 	          <value name="NUM">
+	 	            <shadow type="math_number">
+	 	              <field name="NUM">9</field>
+	 	            </shadow>
+	 	          </value>
+	 	        </block>
+	 	        <block type="math_trig">
+	 	          <value name="NUM">
+	 	            <shadow type="math_number">
+	 	              <field name="NUM">45</field>
+	 	            </shadow>
+	 	          </value>
+	 	        </block>
+	 	        <block type="math_constant"></block>
+	 	        <block type="math_number_property">
+	 	          <value name="NUMBER_TO_CHECK">
+	 	            <shadow type="math_number">
+	 	              <field name="NUM">0</field>
+	 	            </shadow>
+	 	          </value>
+	 	        </block>
+	 	        <block type="math_round">
+	 	          <value name="NUM">
+	 	            <shadow type="math_number">
+	 	              <field name="NUM">3.1</field>
+	 	            </shadow>
+	 	          </value>
+	 	        </block>
+	 	        <block type="math_on_list"></block>
+	 	        <block type="math_modulo">
+	 	          <value name="DIVIDEND">
+	 	            <shadow type="math_number">
+	 	              <field name="NUM">64</field>
+	 	            </shadow>
+	 	          </value>
+	 	          <value name="DIVISOR">
+	 	            <shadow type="math_number">
+	 	              <field name="NUM">10</field>
+	 	            </shadow>
+	 	          </value>
+	 	        </block>
+	 	        <block type="math_constrain">
+	 	          <value name="VALUE">
+	 	            <shadow type="math_number">
+	 	              <field name="NUM">50</field>
+	 	            </shadow>
+	 	          </value>
+	 	          <value name="LOW">
+	 	            <shadow type="math_number">
+	 	              <field name="NUM">1</field>
+	 	            </shadow>
+	 	          </value>
+	 	          <value name="HIGH">
+	 	            <shadow type="math_number">
+	 	              <field name="NUM">100</field>
+	 	            </shadow>
+	 	          </value>
+	 	        </block>
+	 	        <block type="math_random_int">
+	 	          <value name="FROM">
+	 	            <shadow type="math_number">
+	 	              <field name="NUM">1</field>
+	 	            </shadow>
+	 	          </value>
+	 	          <value name="TO">
+	 	            <shadow type="math_number">
+	 	              <field name="NUM">100</field>
+	 	            </shadow>
+	 	          </value>
+	 	        </block>
+	 	        <block type="math_random_float"></block>
+	 	        <block type="math_atan2">
+	 	          <value name="X">
+	 	            <shadow type="math_number">
+	 	              <field name="NUM">1</field>
+	 	            </shadow>
+	 	          </value>
+	 	          <value name="Y">
+	 	            <shadow type="math_number">
+	 	              <field name="NUM">1</field>
+	 	            </shadow>
+	 	          </value>
+	 	        </block>
+	 	      </category>
+	 	      <category name="Text" colour="%{BKY_TEXTS_HUE}">
+	 	        <block type="text"></block>
+	 	        <block type="text_join"></block>
+	 	        <block type="text_append">
+	 	          <value name="TEXT">
+	 	            <shadow type="text"></shadow>
+	 	          </value>
+	 	        </block>
+	 	        <block type="text_length">
+	 	          <value name="VALUE">
+	 	            <shadow type="text">
+	 	              <field name="TEXT">abc</field>
+	 	            </shadow>
+	 	          </value>
+	 	        </block>
+	 	        <block type="text_isEmpty">
+	 	          <value name="VALUE">
+	 	            <shadow type="text">
+	 	              <field name="TEXT"></field>
+	 	            </shadow>
+	 	          </value>
+	 	        </block>
+	 	        <block type="text_indexOf">
+	 	          <value name="VALUE">
+	 	            <block type="variables_get">
+	 	              <field name="VAR">{textVariable}</field>
+	 	            </block>
+	 	          </value>
+	 	          <value name="FIND">
+	 	            <shadow type="text">
+	 	              <field name="TEXT">abc</field>
+	 	            </shadow>
+	 	          </value>
+	 	        </block>
+	 	        <block type="text_charAt">
+	 	          <value name="VALUE">
+	 	            <block type="variables_get">
+	 	              <field name="VAR">{textVariable}</field>
+	 	            </block>
+	 	          </value>
+	 	        </block>
+	 	        <block type="text_getSubstring">
+	 	          <value name="STRING">
+	 	            <block type="variables_get">
+	 	              <field name="VAR">{textVariable}</field>
+	 	            </block>
+	 	          </value>
+	 	        </block>
+	 	        <block type="text_changeCase">
+	 	          <value name="TEXT">
+	 	            <shadow type="text">
+	 	              <field name="TEXT">abc</field>
+	 	            </shadow>
+	 	          </value>
+	 	        </block>
+	 	        <block type="text_trim">
+	 	          <value name="TEXT">
+	 	            <shadow type="text">
+	 	              <field name="TEXT">abc</field>
+	 	            </shadow>
+	 	          </value>
+	 	        </block>
+	 	        <block type="text_print">
+	 	          <value name="TEXT">
+	 	            <shadow type="text">
+	 	              <field name="TEXT">abc</field>
+	 	            </shadow>
+	 	          </value>
+	 	        </block>
+	 	        <block type="text_prompt_ext">
+	 	          <value name="TEXT">
+	 	            <shadow type="text">
+	 	              <field name="TEXT">abc</field>
+	 	            </shadow>
+	 	          </value>
+	 	        </block>
+	 	      </category>
+	 	      <category name="Lists" colour="%{BKY_LISTS_HUE}">
+	 	        <block type="lists_create_with">
+	 	          <mutation items="0"></mutation>
+	 	        </block>
+	 	        <block type="lists_create_with"></block>
+	 	        <block type="lists_repeat">
+	 	          <value name="NUM">
+	 	            <shadow type="math_number">
+	 	              <field name="NUM">5</field>
+	 	            </shadow>
+	 	          </value>
+	 	        </block>
+	 	        <block type="lists_length"></block>
+	 	        <block type="lists_isEmpty"></block>
+	 	        <block type="lists_indexOf">
+	 	          <value name="VALUE">
+	 	            <block type="variables_get">
+	 	              <field name="VAR">{listVariable}</field>
+	 	            </block>
+	 	          </value>
+	 	        </block>
+	 	        <block type="lists_getIndex">
+	 	          <value name="VALUE">
+	 	            <block type="variables_get">
+	 	              <field name="VAR">{listVariable}</field>
+	 	            </block>
+	 	          </value>
+	 	        </block>
+	 	        <block type="lists_setIndex">
+	 	          <value name="LIST">
+	 	            <block type="variables_get">
+	 	              <field name="VAR">{listVariable}</field>
+	 	            </block>
+	 	          </value>
+	 	        </block>
+	 	        <block type="lists_getSublist">
+	 	          <value name="LIST">
+	 	            <block type="variables_get">
+	 	              <field name="VAR">{listVariable}</field>
+	 	            </block>
+	 	          </value>
+	 	        </block>
+	 	        <block type="lists_split">
+	 	          <value name="DELIM">
+	 	            <shadow type="text">
+	 	              <field name="TEXT">,</field>
+	 	            </shadow>
+	 	          </value>
+	 	        </block>
+	 	        <block type="lists_sort"></block>
+	 	      </category>
+	 	      <sep></sep>
+	 	      <category name="Variables" colour="%{BKY_VARIABLES_HUE}" custom="VARIABLE"></category>
+	 	      <category name="Functions" colour="%{BKY_PROCEDURES_HUE}" custom="PROCEDURE"></category>
+	 	    </xml>
+	  </div>
+	   <BR>
+	Code arrives here.
+   <textarea id="textarea" style="height: 150px; width: 100%;" >code here</textarea>
+  </blockquote>
+  
+  <blockquote>
+	  <h3>Other environments</h3>
+	  <ul>
+	  {% for item in otherServers %}
+	    <li>Environment for <a href="http://{{ item.data.ip_address }}">{{ item.data.droplet.name }}</a></li>
+	  {% endfor %}
+	  </ul>
+  </blockquote>
+  
+
+<script src="./main.js"></script>
+<script src="./blockly/blockly_compressed.js"></script>
+<script src="./blockly/blocks_compressed.js"></script>
+<script src="./blockly/javascript_compressed.js"></script>
+<script src="./blockly/msg/js/en.js"></script>
+<script>
+  var workspace = Blockly.inject('blocklyDiv',
+      {toolbox: document.getElementById('toolbox')});
+  function myUpdateFunction(event) {
+	  console.log("changed");
+	  var code = Blockly.JavaScript.workspaceToCode(workspace);
+	  document.getElementById('textarea').value = code;
+  }
+  workspace.addChangeListener(myUpdateFunction);
+</script>
+</body>
+</html>
+
+ 	  
+

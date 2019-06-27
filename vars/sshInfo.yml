@@ -1,0 +1,5 @@
+---
+  sshInfo:
+    do_ssh_key_name: WorkAndPlay
+    local_private_ssh_key: ~/.ssh/WorkAndPlay
+...

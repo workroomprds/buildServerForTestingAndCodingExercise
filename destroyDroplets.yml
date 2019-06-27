@@ -1,0 +1,17 @@
+---
+- hosts: local
+
+  vars_files:
+    - ./vars/droplets.yml
+    - ./vars/sensitive.yml
+
+  tasks:
+  - name: delete droplets that match IDs above
+    digital_ocean: >
+      state=absent
+      command=droplet
+      name={{item.name}}
+      unique_name=yes
+      api_token={{ sensitive.do_token }}
+    with_items: "{{droplets}}"
+...
