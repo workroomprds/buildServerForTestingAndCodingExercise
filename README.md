@@ -10,8 +10,10 @@ Ansible script and supporting files to build (and destroy) servers for WorkAndPl
 * An SSH key, which you have stored on your local machine and have added to your DO account
 * A file `/vars/sshInfo.yml`containing the SSH key name in do_ssh_key_name and the local path in local_private_ssh_key
 * A file `droplets.yml` containing an array of droplet names
+* Changes to the Ansible hosts file and the ansible.cfg file to make them match what you have
+* Ansible on a DO server referred to in the hosts file.
 
-(and perhaps more – this is the first instance of this file)
+(and perhaps more...)
 
 (to do: add links to the sources I used to get familiar with DigitalOcean, their API and their tokens, and how to set up and add a new SSH key)
 
